@@ -1,8 +1,7 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import { spawn } from "child_process";
-import os from "os";
+import fs from "fs";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -11,30 +10,19 @@ app.use(cors());
 
 const port = 4000;
 
-app.post("/transcribe", upload.single("audio"), (req, res) => {
+app.post("/transcribe", upload.single("audio"), async (req, res) => {
   console.log("File saved:", req.file);
-  const filePath = req.file.path;
 
-  const homeDir = os.homedir();
-  const relativePythonExecutablePath = "python_environments/openai-whisper/bin/python";
-  const venvPython = `${homeDir}/${relativePythonExecutablePath}`;
+  const formData = new FormData();
+  formData.append("file", fs.createReadStream(req.file.path));
 
-  // Example: run a Python script inside the venv
-  const process = spawn(venvPython, ["transcribe.py", filePath]);
-
-  process.stdout.on("data", (data) => {
-    console.log(`stdout: ${data}`);
-    res.setHeader("content-type", "application/json");
-    res.json({ text: data.toString() });
+  const response = await fetch("http://whisper:8000/transcribe", {
+    method: "POST",
+    body: formData,
   });
 
-  process.stderr.on("data", (data) => {
-    console.error(`stderr: ${data}`);
-  });
-
-  process.on("close", (code) => {
-    console.log(`child process exited with code ${code}`);
-  });
+  const data = await response.json();
+  res.json(data);
 });
 
 app.listen(port, () => {
