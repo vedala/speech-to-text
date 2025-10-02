@@ -10,6 +10,7 @@ WORKDIR /app
 RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir git+https://github.com/openai/whisper.git
 RUN pip install fastapi
+RUN pip install python-multipart
 
 COPY . .
 
