@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 
 function RecordUploadAudio() {
   const [recording, setRecording] = useState(false);
-  // const [audioURL, setAudioURL] = useState("");
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const [transcript, setTranscript] = useState("");
@@ -11,7 +10,6 @@ function RecordUploadAudio() {
     const formData = new FormData();
     formData.append("audio", file);
 
-console.log("In uploadRecording");
     const res = await fetch("http://localhost:4000/transcribe", {
       method: "POST",
       body: formData,
@@ -36,10 +34,7 @@ console.log("In uploadRecording");
       mediaRecorderRef.current.onstop = async () => {
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
         const file = new File([blob], "recording.webm", { type: "audio/webm" });
-        // const url = URL.createObjectURL(blob);
 
-console.log("In onstop");
-        // setAudioURL(url);
         const transcriptData = await uploadRecording(file);
         console.log("transcriptData=", transcriptData);
         setTranscript(transcriptData.text);
@@ -72,16 +67,7 @@ console.log("In onstop");
         rows={10}
         cols={60}
       />
-{/*
-      {audioURL && (
-        <div className="mt-4">
-          <audio controls src={audioURL}></audio>
-          <a href={audioURL} download="recording.webm" className="ml-2 text-blue-500">
-            Download
-          </a>
-        </div>
-      )}
- */}
+
       <button
         onClick={() => {
           const blob = new Blob([transcript], { type: "text/plain" });
