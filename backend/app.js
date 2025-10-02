@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import axios from "axios";
+import FormData from "form-data";
 import multer from "multer";
 import fs from "fs";
 
@@ -16,13 +18,11 @@ app.post("/transcribe", upload.single("audio"), async (req, res) => {
   const formData = new FormData();
   formData.append("file", fs.createReadStream(req.file.path));
 
-  const response = await fetch("http://whisper:8000/transcribe", {
-    method: "POST",
-    body: formData,
+  const response = await axios.post("http://whisper:8000/transcribe", formData, {
+    headers: formData.getHeaders(),
   });
 
-  const data = await response.json();
-  res.json(data);
+  res.json(response.data);
 });
 
 app.listen(port, () => {
