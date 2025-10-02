@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    networks:
+      - med-trans-network
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "4000:4000"
+    networks:
+      - med-trans-network
+    depends_on:
+      - whisper
+
+  whisper:
+    build: ./whisper
+    networks:
+      - med-trans-network
+
+networks:
+  med-trans-network:
