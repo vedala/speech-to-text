@@ -11,6 +11,7 @@ const upload = multer({ dest: "uploads/" });
 app.use(cors());
 
 const port = 4000;
+const WHISPER_URL = process.env.WHISPER_URL;
 
 app.post("/transcribe", upload.single("audio"), async (req, res) => {
   console.log("File saved:", req.file);
@@ -18,7 +19,7 @@ app.post("/transcribe", upload.single("audio"), async (req, res) => {
   const formData = new FormData();
   formData.append("file", fs.createReadStream(req.file.path));
 
-  const response = await axios.post("http://whisper:8000/transcribe", formData, {
+  const response = await axios.post(`${WHISPER_URL}/transcribe`, formData, {
     headers: formData.getHeaders(),
   });
 
