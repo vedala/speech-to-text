@@ -17,7 +17,7 @@ services:
       - key: WHISPER_API_URL
         value: http://whisper:8000
 
-  - type: private-service
+  - type: web
     name: stt-whisper
     env: docker
     rootDir: whisper
