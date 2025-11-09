@@ -7,7 +7,7 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - med-trans-network
+      - stt-network
     depends_on:
       - backend
 
@@ -18,14 +18,14 @@ services:
     environment:
       WHISPER_URL: "http://whisper:8000"
     networks:
-      - med-trans-network
+      - stt-network
     depends_on:
       - whisper
 
   whisper:
     build: ./whisper
     networks:
-      - med-trans-network
+      - stt-network
 
 networks:
-  med-trans-network:
+  stt-network:
